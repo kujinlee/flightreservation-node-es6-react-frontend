@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import FindFlightsResults from './FindFlightsResults'; // Import the results component
+import FindFlightsResults from './FindFlightsResults';
 
 function FindFlights() {
   const [from, setFrom] = useState('');
@@ -10,25 +10,30 @@ function FindFlights() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    const formattedDate = new Date(departureDate).toISOString().split('T')[0]; // Format date to YYYY-MM-DD
+    console.log('Sending request with:', { from, to, departureDate: formattedDate }); // Log request data
     try {
       const response = await fetch('https://localhost:8080/flightreservation-node-es6-react-backend/findFlights', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ from, to, departureDate }),
+        body: JSON.stringify({ from, to, departureDate: formattedDate }),
       });
 
+      console.log('Response status:', response.status); // Log response status
       if (response.ok) {
         const data = await response.json();
+        console.log('Response data:', data); // Log response data
         setFlights(data.flights);
         setMessage('');
       } else {
         const errorData = await response.json();
+        console.error('Error response data:', errorData); // Log error response
         setMessage(errorData.message || 'Error fetching flight data.');
       }
     } catch (error) {
-      console.error('Network error or server not responding:', error);
+      console.error('Network error or server not responding:', error); // Log network error
       setMessage('Network error or server not responding.');
     }
   };
