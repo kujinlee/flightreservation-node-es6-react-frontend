@@ -11,9 +11,23 @@ function FindFlights() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const formattedDate = new Date(departureDate).toISOString().split('T')[0]; // Format date to YYYY-MM-DD
-    console.log('Sending request with:', { from, to, departureDate: formattedDate }); // Log request data
+
+    // Validate environment variables
+    const host = process.env.REACT_APP_BACKEND_APP_HOST;
+    const port = process.env.REACT_APP_BACKEND_APP_PORT;
+    const baseUrl = process.env.REACT_APP_BACKEND_APP_BASE_URL;
+
+    if (!host || !port || !baseUrl) {
+      console.error('Environment variables REACT_APP_BACKEND_APP_HOST, REACT_APP_BACKEND_APP_PORT, or REACT_APP_BACKEND_APP_BASE_URL are not defined.');
+      setMessage('Configuration error: Backend URL is not properly defined.');
+      return;
+    }
+
+    const backendUrl = `https://${host}:${port}${baseUrl}`;
+    console.log('Sending request to:', backendUrl); // Log the constructed URL
+
     try {
-      const response = await fetch('https://localhost:8080/flightreservation-node-es6-react-backend/findFlights', {
+      const response = await fetch(`${backendUrl}/findFlights`, { // Construct full backend URL
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
