@@ -5,24 +5,38 @@ function Confirmation() {
   const { state } = useLocation(); // Access reservation details passed via state
   const navigate = useNavigate();
 
-  const [reservationState, setReservationState] = useState(state?.reservation);
+  // Ensure state and reservation exist
+  const reservation = state?.reservation;
+  console.log('State from useLocation:', state); // Log the state object
+  console.log('Reservation object:', reservation); // Log the reservation object
+
+  if (!reservation) {
+    return (
+      <div>
+        <p>Reservation details are not available. Please go back and try again.</p>
+        <button onClick={() => navigate('/findFlights')}>Go Back</button>
+      </div>
+    );
+  }
+
+  const [reservationState, setReservationState] = useState(state?.reservation || {});
   const [showConfirmButton, setShowConfirmButton] = useState(true);
   const [message, setMessage] = useState(reservationState?.message || '');
 
-  if (!reservationState) {
-    return <p>No reservation details available. Please go back and try again.</p>;
-  }
-
-  const { reservation: reservationDetails, flightDetails, passengerDetails } = reservationState;
+  const { reservation: reservationDetails = {}, flightDetails = {}, passengerDetails = {} } = reservationState;
+  console.log('Reservation details:', reservationDetails); // Log reservationDetails
 
   const handleConfirmReservation = async () => {
     try {
+      const requestBody = { reservationId: reservationDetails.id };
+      console.log('Request body being sent:', requestBody); // Log the request body
+
       const response = await fetch('https://localhost:8080/flightreservation-node-es6-react-backend/completeReservation', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ reservationId: reservationDetails.id }),
+        body: JSON.stringify(requestBody), // Ensure reservationId is sent
       });
 
       const contentType = response.headers.get('content-type');
@@ -50,8 +64,9 @@ function Confirmation() {
       <h2>Reservation Confirmation</h2>
       <p>{message}</p>
       <h3>Reservation Details</h3>
-      <p>Reservation ID: {reservationDetails.id}</p>
-      <p>Amount Paid: ${Number(reservationDetails.amount).toFixed(2)}</p> {/* Convert amount to a number */}
+      <p>Reservation ID: {reservationDetails.id || 'N/A'}</p>
+      <p>Amount Paid: ${Number(reservationDetails.amount || 0).toFixed(2)}</p> {/* Fallback to 0 if amount is undefined */}
+      <p>Card Number: **** **** **** {reservationDetails.cardNumber?.slice(-4) || 'N/A'}</p> {/* Handle undefined cardNumber */}
 
       <h3>Flight Details</h3>
       <p>Flight Number: {flightDetails.flightNumber}</p>

@@ -17,6 +17,8 @@ function FindFlights() {
     const port = process.env.REACT_APP_BACKEND_APP_PORT;
     const baseUrl = process.env.REACT_APP_BACKEND_APP_BASE_URL;
 
+    console.log('Environment Variables:', { host, port, baseUrl }); // Debug environment variables
+
     if (!host || !port || !baseUrl) {
       console.error('Environment variables REACT_APP_BACKEND_APP_HOST, REACT_APP_BACKEND_APP_PORT, or REACT_APP_BACKEND_APP_BASE_URL are not defined.');
       setMessage('Configuration error: Backend URL is not properly defined.');

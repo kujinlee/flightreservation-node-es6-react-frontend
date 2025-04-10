@@ -12,6 +12,8 @@ function ReserveFlight() {
   const [phone, setPhone] = useState('');
   const [cardNumber, setCardNumber] = useState('');
   const [amount, setAmount] = useState('');
+  const [errors, setErrors] = useState([]);
+  const [message, setMessage] = useState('');
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -37,12 +39,17 @@ function ReserveFlight() {
         const data = await response.json();
         console.log('Reservation successful:', data);
         navigate('/confirmation', { state: { reservation: data } }); // Navigate to confirmation page
+        setMessage('Reservation successful!');
+        setErrors([]);
       } else {
-        const errorText = await response.text(); // Read the response as text for debugging
-        console.error('Error creating reservation:', errorText);
+        const errorData = await response.json();
+        setMessage(errorData.message || 'Error creating reservation.');
+        setErrors(errorData.errors || []);
       }
     } catch (error) {
       console.error('Network error or server not responding:', error);
+      setMessage('Network error or server not responding.');
+      setErrors([]);
     }
   };
 
@@ -60,6 +67,16 @@ function ReserveFlight() {
       <p>Departure Date: {flight.dateOfDeparture}</p>
       <p>Estimated Departure Time: {flight.estimatedDepartureTime}</p>
       <p>Price: ${flight.price.toFixed(2)}</p>
+      {message && <p>{message}</p>}
+      {errors.length > 0 && (
+        <ul>
+          {errors.map((error, index) => (
+            <li key={index} style={{ color: 'red' }}>
+              {error.field ? `${error.field}: ${error.message}` : error.message}
+            </li>
+          ))}
+        </ul>
+      )}
       <form onSubmit={handleSubmit}>
         <label>
           First Name:
