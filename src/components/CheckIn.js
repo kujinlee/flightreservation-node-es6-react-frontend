@@ -1,5 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
+import { getBackendUrl } from '../utils/validateEnv'; // Import the utility function
+
+let backendUrl;
+try {
+  backendUrl = getBackendUrl(); // Get the backend URL
+} catch (error) {
+  console.error(error.message);
+}
 
 function CheckIn() {
   const { state } = useLocation(); // Access reservation details passed via state
@@ -9,10 +17,15 @@ function CheckIn() {
   const [message, setMessage] = useState('');
 
   useEffect(() => {
+    if (!backendUrl) {
+      setMessage('Configuration error: Backend URL is not properly defined.');
+      return;
+    }
+
     const fetchCheckInData = async () => {
       try {
         const response = await fetch(
-          `https://localhost:8080/flightreservation-node-es6-react-backend/checkIn?reservationId=${state?.reservationId}`
+          `${backendUrl}/checkIn?reservationId=${state?.reservationId}`
         );
         if (response.ok) {
           const data = await response.json();
@@ -39,7 +52,7 @@ function CheckIn() {
     e.preventDefault();
     try {
       const response = await fetch(
-        'https://localhost:8080/flightreservation-node-es6-react-backend/completeCheckIn',
+        `${backendUrl}/completeCheckIn`,
         {
           method: 'POST',
           headers: {

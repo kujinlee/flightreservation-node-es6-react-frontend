@@ -1,5 +1,13 @@
 import React, { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
+import { getBackendUrl } from '../utils/validateEnv'; // Import the utility function
+
+let backendUrl;
+try {
+  backendUrl = getBackendUrl(); // Get the backend URL
+} catch (error) {
+  console.error(error.message);
+}
 
 function Confirmation() {
   const { state } = useLocation(); // Access reservation details passed via state
@@ -31,7 +39,7 @@ function Confirmation() {
       const requestBody = { reservationId: reservationDetails.id };
       console.log('Request body being sent:', requestBody); // Log the request body
 
-      const response = await fetch('https://localhost:8080/flightreservation-node-es6-react-backend/completeReservation', {
+      const response = await fetch(`${backendUrl}/completeReservation`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

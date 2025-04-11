@@ -1,5 +1,13 @@
 import React, { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
+import { getBackendUrl } from '../utils/validateEnv'; // Import the utility function
+
+let backendUrl;
+try {
+  backendUrl = getBackendUrl(); // Get the backend URL
+} catch (error) {
+  console.error(error.message);
+}
 
 function ReserveFlight() {
   const { state } = useLocation(); // Access flight details passed via state
@@ -18,7 +26,7 @@ function ReserveFlight() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch('https://localhost:8080/flightreservation-node-es6-react-backend/createReservation', {
+      const response = await fetch(`${backendUrl}/createReservation`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
