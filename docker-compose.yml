@@ -10,13 +10,15 @@ services:
         REACT_APP_BACKEND_APP_PORT: ${REACT_APP_BACKEND_APP_PORT}
         REACT_APP_BACKEND_APP_BASE_URL: ${REACT_APP_BACKEND_APP_BASE_URL}
     ports:
-      - "3000:80"
+      - "443:443"
+      - "80:80"
+    volumes:
+      - ./certs:/etc/nginx/certs:ro # Mount the certs folder as read-only
+      - .:/app
+      - /app/node_modules
     environment:
       - REACT_APP_BACKEND_APP_HOST=${REACT_APP_BACKEND_APP_HOST}
       - REACT_APP_BACKEND_APP_PORT=${REACT_APP_BACKEND_APP_PORT}
       - REACT_APP_BACKEND_APP_BASE_URL=${REACT_APP_BACKEND_APP_BASE_URL}
     env_file:
-      - .env # Explicitly load the .env file
-    volumes:
-      - .:/app
-      - /app/node_modules
+      - .env

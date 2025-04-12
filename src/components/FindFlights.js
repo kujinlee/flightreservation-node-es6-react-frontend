@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import FindFlightsResults from './FindFlightsResults';
 
 function FindFlights() {
@@ -7,6 +7,11 @@ function FindFlights() {
   const [departureDate, setDepartureDate] = useState('');
   const [flights, setFlights] = useState([]);
   const [message, setMessage] = useState('');
+
+  useEffect(() => {
+    const frontendUrl = `${window.location.protocol}//${window.location.host}${window.location.pathname}`;
+    console.log('Frontend URL:', frontendUrl); // Log the frontend URL
+  }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
