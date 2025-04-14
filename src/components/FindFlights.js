@@ -34,7 +34,7 @@ function FindFlights() {
     console.log('Sending request to:', backendUrl); // Log the constructed URL
 
     try {
-      const response = await fetch(`${backendUrl}/findFlights`, { // Construct full backend URL
+      const response = await fetch(`${backendUrl}/findFlights`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
