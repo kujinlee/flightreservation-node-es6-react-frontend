@@ -14,7 +14,7 @@ Create a `.env` file in the project root with the following variables:
 ```
 REACT_APP_BACKEND_APP_HOST=localhost
 REACT_APP_BACKEND_APP_PORT=8082
-REACT_APP_BACKEND_APP_BASE_URL=/flightreservation-node-es6-react-backend
+REACT_APP_BACKEND_APP_BASE_URL=/flightreservation-node-es6-backend
 ```
 
 ### 2. SSL Certificates
